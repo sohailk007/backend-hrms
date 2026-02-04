@@ -6,7 +6,9 @@ from .models import Employee, Attendance
 from .serializers import EmployeeSerializer, AttendanceSerializer, AttendanceSummarySerializer
 
 
+# ===========================
 # Employee APIs
+# ===========================
 
 @extend_schema(
     summary="List all employees",
@@ -14,7 +16,7 @@ from .serializers import EmployeeSerializer, AttendanceSerializer, AttendanceSum
     responses={200: EmployeeSerializer(many=True)}
 )
 class EmployeeListCreateView(generics.ListCreateAPIView):
-    queryset = Employee.objects.all().order_by('-created_at')
+    queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
 
     @extend_schema(
@@ -36,7 +38,9 @@ class EmployeeDeleteView(generics.DestroyAPIView):
     lookup_field = 'id'
 
 
+# ===========================
 # Attendance APIs
+# ===========================
 
 @extend_schema(
     summary="Mark attendance",
@@ -75,7 +79,9 @@ class AttendanceListView(generics.ListAPIView):
         return queryset
 
 
-# Bonus: Attendance Summary
+# ===========================
+# Attendance Summary API
+# ===========================
 
 @extend_schema(
     summary="Get total present days per employee",
@@ -101,11 +107,12 @@ class AttendanceSummaryView(views.APIView):
             for item in data
         ]
 
-        serializer = AttendanceSummarySerializer(formatted_data, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(formatted_data, status=status.HTTP_200_OK)
 
 
-# Bonus: Dashboard Summary
+# ===========================
+# Dashboard Summary API
+# ===========================
 
 @extend_schema(
     summary="Get dashboard summary",
@@ -130,10 +137,11 @@ class DashboardSummaryView(views.APIView):
 
         total_employees = Employee.objects.count()
         total_attendance_records = Attendance.objects.count()
-        total_present_today = Attendance.objects.filter(
-            status='Present',
-            date=date
-        ).count() if date else None
+
+        if date:
+            total_present_today = Attendance.objects.filter(status='Present', date=date).count()
+        else:
+            total_present_today = None
 
         return Response({
             "total_employees": total_employees,
