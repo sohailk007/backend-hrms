@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
-from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -52,26 +51,23 @@ DJANGO_CORE_APPS = [
 EXTERNAL_APPS = [
     'rest_framework',
     'corsheaders',
-    'rest_framework_simplejwt',
     'drf_spectacular',
     # 'django_filters',
 ]
 
 # Internal / Project Apps
 INTERNAL_APPS = [
-    'accounts',
+    'hrms'
 ]
 
 # Installed applications
 INSTALLED_APPS = DJANGO_CORE_APPS + EXTERNAL_APPS + INTERNAL_APPS
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
@@ -79,14 +75,7 @@ REST_FRAMEWORK = {
     
 }
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(
-        minutes=config('ACCESS_TOKEN_LIFETIME', default=30, cast=int)
-    ),
-    'REFRESH_TOKEN_LIFETIME': timedelta(
-        days=config('REFRESH_TOKEN_LIFETIME', default=7, cast=int)
-    ),
-}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -137,7 +126,6 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = 'accounts.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -193,7 +181,7 @@ SPECTACULAR_SETTINGS = {
     ],
     'TITLE': 'Employee Management System API',
     'DESCRIPTION': (
-        'Employee Management System'
+        'API documentation for HRMS Lite application',
     ),
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
