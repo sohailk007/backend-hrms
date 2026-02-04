@@ -36,14 +36,15 @@ if IS_RENDER:
 else:
     ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
-# CORS   
+# CORS
 if IS_RENDER:
-    CORS_ALLOWED_ORIGINS = [
-        "https://backend-hrms-umwx.onrender.com",
-        "https://frontend-hrms-omega.vercel.app/",
-        # Add your frontend URL here when you deploy it
+    # Allow all origins in production temporarily for testing
+    CORS_ALLOW_ALL_ORIGINS = True
+    # Trusted origins for CSRF
+    CSRF_TRUSTED_ORIGINS = [
+        'https://backend-hrms-umwx.onrender.com',
+        'https://frontend-hrms-omega.vercel.app',  # No trailing slash!
     ]
-    CORS_ALLOW_ALL_ORIGINS = True  # Temporary for testing
 else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:5173",
@@ -201,10 +202,6 @@ if IS_RENDER:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
-    
-CSRF_TRUSTED_ORIGINS = [
-    'https://backend-hrms-umwx.onrender.com',
-]
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
